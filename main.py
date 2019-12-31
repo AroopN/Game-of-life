@@ -1,4 +1,4 @@
-from random import random,choice
+from random import random, choice
 import pygame
 pygame.init()
 
@@ -62,34 +62,44 @@ def randommatrix(m, n):
     a = [[choice([1, 0]) for i in range(n)] for i in range(m)]
     return a
 
-def print_pixel(x,y,color):
+def print_pixel(x, y, color):
     pygame.draw.rect(gameDisplay, color, [
                      x*pix_size, y*pix_size, pix_size, pix_size])
 
 
 def game_loop():
+    c = 0
     on = True
     global prev
+    global b
     while on:
+        c += 1
+        c %= 10
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 on = False
+            if (pygame.mouse.get_pressed()[0]):
+                x, y = pygame.mouse.get_pos()
+                x //= pix_size
+                y //= pix_size
+                b[x][y] = 1
         gameDisplay.fill(white)
         for i in range(m):
             for j in range(n):
                 if b[i][j]:
                     # col = (int(random()*256), int(random()*256), int(random()*256))
                     if not prev[i][j]:
-                        col = (255,0,0)
+                        col = (0, 0, 0)
                     else:
-                        col= (0,0,0)
-                    print_pixel(i,j,col)
+                        col = (0, 0, 0)
+                    print_pixel(i, j, col)
                 else:
                     print_pixel(i, j, white)
         prev = [x[:] for x in b]
-        gameOfLife(b)
+        if c == 9:
+            gameOfLife(b)
         pygame.display.update()
-        clock.tick(0.5)
+        clock.tick(30)
 
 
 black = (0, 0, 0)
@@ -109,6 +119,3 @@ prev = [x[:] for x in b]
 
 game_loop()
 pygame.quit()
-
-
-
